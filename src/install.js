@@ -36,7 +36,11 @@ export function install(Vue) {
     }
   };
 
+
+  // 混入组件选项
   Vue.mixin({
+    // 在组件创建之前执行
+    // todo 这个组件是 App.vue 吗=-=
     beforeCreate() {
       if (isDef(this.$options.router)) {
         this._routerRoot = this;
@@ -53,18 +57,23 @@ export function install(Vue) {
     },
   });
 
+  // Object.defineProperty() 直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象
+  // 在 Vue 的原型链上面挂了个 $router
   Object.defineProperty(Vue.prototype, "$router", {
     get() {
       return this._routerRoot._router;
     },
   });
 
+  // 在 Vue 的原型链上面挂了个 $route
+  // $route 似乎是存 当前路由对象 的
   Object.defineProperty(Vue.prototype, "$route", {
     get() {
       return this._routerRoot._route;
     },
   });
 
+  // 挂载组件到 vue-router 插件上,后面插件安装之后,就能全局使用了
   Vue.component("RouterView", View);
   Vue.component("RouterLink", Link);
 
