@@ -1,0 +1,83 @@
+<html>
+  <body>
+    <div id="div1"></div>
+    <!-- <input type="input" value="localhost" id="ip" /> -->
+    <input type="button" value="连接" onclick="createConnect()" />
+    <input type="button" value="断开" onclick="disConnect()" />
+    <!-- <input type="button" value="登录" onclick="login()" /> -->
+  </body>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script script type="text/javascript">
+    var ws = null;
+    function createConnect() {
+      let ip = $("#ip").val();
+      let token =
+        "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhU2NvcGVHb3ZMaXN0IjoiWzE3NF0iLCJ1c2VyX25hbWUiOiJocGFkbWluIiwic2NvcGUiOlsiYWxsIl0sInVzZXJHb3YiOiJ7XCIzXCI6MTc0fSIsImV4cCI6MTYxODM4OTAyNywidXNlck5hbWUiOiLpu4Tln5TotbDoiKrnrqHnkIYiLCJ1c2VySWQiOjI0NiwiYXV0aG9yaXRpZXMiOlsiZGljdC1kZXRhaWw6QURJVCIsImRhdGEtY29sbGVjdGlvbjpBREQiLCJhYm5vcm1hbC1yZWNvcmQ6SEFORExFIiwiQUxBUk1fUkVDT1JEIiwiZWRpdC1yZWNvcmQ6Q0hFQ0siLCJJTkZPIiwiZmFjdG9yLWxpc3Q6SU1QT1JUIiwiaW1wb3J0LWRhdGE6TE9BRF9TQVZFIiwiYmFzaWMtcmVnaW9uOkRFTEVURSIsInNjZW5lLWxpc3Q6RURJVCIsIkRBVEFfREVUQUxMIiwiaW1wb3J0LWRhdGE6VVBMT0FEIiwiTU9OSVRPUl9EQVRBIiwiaW5kdXN0cnktdHlwZTpFRElUIiwic2l0ZS1tYW5hZ2VyOkFERCIsImRpY3QtdHlwZTpTUEFNU0RJQ1RUWVBFX0VESVQiLCJkYXRhLWRldGFpbDpJTlNFUlQiLCJDVVJWRSIsImZhY3Rvci1saXN0OkRPV04iLCJzY2VuZS1saXN0OkFERCIsIklNUE9SVF9EQVRBIiwiZmFjdG9yLWxpc3Q6REVMRVRFIiwic2l0ZS1tYW5hZ2VyOkFSRUEiLCJzaXRlLW1hbmFnZXI6QURJVCIsIndvcmstb3JkZXI6SEFORExFIiwiaW5kdXN0cnktdHlwZTpERUxFVEUiLCJpbXBvcnQtZGF0YTpDTEVBUiIsIkJBU0lDX1JFR0lPTiIsIkZBQ1RPUl9NQU5BR0VSIiwiVk9ZQUdFX01BTkFHRSIsIlBPTExVVEFOVF9TT1VSQ0UiLCJmYWN0b3ItbGlzdDpFRE9UIiwiZWRpdC1yZWNvcmQ6R09PTiIsIndvcmstb3JkZXI6QUREIiwibW9uaXRvci1kYXRhOkVYUE9SVCIsIkNBTEVOREFSIiwiU0NFTkVfTElTVCIsIldBUk5JTkdfQUxBUk0iLCJzY2VuZS1saXN0OkRFTEVURSIsIldPUktfT1JERVIiLCJJTlNUUlVNRU5UX1FVQUxJVFlfQ09OVFJPTCIsIlRBU0tfTUFQIiwiaW1wb3J0LWRhdGE6REVMRVRFIiwiZmFjdG9yLWxpc3Q6Q1JFQVRFIiwiaW1wb3J0LWRhdGE6RE9XTkxPQUQiLCJJTkRVU1RSWV9UWVBFIiwiVk9ZQUdFX1RBU0siLCJ3YXJuLW1ldGhvZDpBREQiLCJkaWN0LXR5cGU6U1BBTVNESUNUVFlQRV9TRUFSQ0giLCJCQVNJQyIsImVkaXQtcmVjb3JkOlVTRVIiLCJkaWN0LXR5cGU6U1BBTVNESUNUVFlQRV9ERUxFVEUiLCJpbmR1c3RyeS10eXBlOkFERCIsIm1vbml0b3ItZGF0YTpDSEVDSyIsImRhdGEtZGV0YWlsOkVYUE9SVCIsImRhdGEtZGV0YWlsOkVESVQiLCJ3YXJuLW1ldGhvZDpERUxFVEUiLCJtb25pdG9yLWRhdGE6WkhJS09ORyIsIlNJVEVfREVUQUlMIiwid2Fybi1tZXRob2Q6RURJVCIsImFsYXJtLXJlY29yZDpFWFBPUlQiLCJtb25pdG9yLWRhdGE6SU1QT1JUIiwid2Fybi1tZXRob2Q6Q0hFQ0siLCJhbGFybS1yZWNvcmQ6REVMRVRFIiwic2l0ZS1tYW5hZ2VyOkNIRUNLIiwiZWRpdC1yZWNvcmQ6RURJVCIsIlNJVEVfTUFOQUdFUiIsIm1vbml0b3ItZGF0YTpISURFIiwiTUVUSE9EX0xJU1QiLCJkYXRhLWRldGFpbDpERUxFVEUiLCJkYXRhLWRldGFpbDpDQU5DRUwiLCJFRElUX1JFQ09SRCIsInNpdGUtbWFuYWdlcjpESVNBQkxFRCIsImJhc2ljLXJlZ2lvbjpBREQiLCJEQVRBX0RFVEFJTCIsImFibm9ybWFsLXJlY29yZDpjYW5jZWwiLCJkaWN0LWRldGFpbDpBREQiLCJkYXRhLWNvbGxlY3Rpb24iLCJiYXNpYy1yZWdpb246RURJVCIsImRpY3QtZGV0YWlsOkRFTEVURSIsIkRJQ1RfVFlQRSIsImRhdGEtZGV0YWlsOkZJTFRFUiIsImRpY3QtdHlwZTpTUEFNU0RJQ1RUWVBFX0FERCJdLCJqdGkiOiJhY2M1M2JjNi01ODBlLTQ0M2MtOWU4ZC0zNGEzMGRkZGYyNDgiLCJjbGllbnRfaWQiOiJoeG1hc3MtdWFhIiwidXNlclBhcmVudEdvdiI6IntcIjNcIjoxNjJ9In0.HsKw0Zd_lca6__AXj1Hv6_qOVhudVaMLBus6oHNUEwc";
+      //let url="ws://"+ip+":10010/websocket/"+token;
+      let url =
+        "ws://www.hexin-tofms.com:8107/mg/service-dataserver/websocket/";
+      // "ws://192.168.1.242:8107/mg/service-dataserver/websocket/" + token;
+      //let url="ws://192.168.1.242:8107/mg/service-dataserver/websocket/"+token;
+      ws = new WebSocket(url);
+      //申请一个WebSocket对象，参数是服务端地址，同http协议使用http://开头一样，WebSocket协议的url使用ws://开头，另外安全的WebSocket协议使用wss://开头
+      ws.onopen = function () {
+        var param = {};
+        param.cmdIds = [2, 5, 202];
+        // param.deviceCodes=["SPIMS-0001","SPIMS-2001"];
+        // param.deviceCode = "SV00110091S";
+        param.deviceCodes = ["spims-hxadd97"];
+        param.userName = "demo1";
+        var sendJson = JSON.stringify(param);
+        ws.send(sendJson);
+      };
+      ws.onmessage = function (e) {
+        //当客户端收到服务端发来的消息时，触发onmessage事件，参数e.data包含server传递过来的数据
+        console.log(e.data);
+      };
+      ws.onclose = function (e) {
+        //当客户端收到服务端发送的关闭连接请求时，触发onclose事件
+        console.log("close");
+        //reconnect();
+      };
+      ws.onerror = function (e) {
+        //如果出现连接、处理、接收、发送数据失败的时候触发onerror事件
+        console.log(error);
+        //reconnect();
+      };
+    }
+    function reconnect() {
+      //没连接上会一直重连，设置延迟避免请求过多
+      setTimeout(function () {
+        createConnect();
+        console.log("正在重连，当前时间" + new Date());
+      }, 5000); //这里设置重连间隔(ms)
+    }
+    window.onunload = function () {
+      ws.close();
+    };
+
+    function disConnect() {
+      ws.close();
+    }
+
+    function login() {
+      var url =
+        "http://www.hexin-tofms.com:8096/ruoyi/login?username=admin&password=admin123";
+      // var url="http://localhost:8756/ruoyi/login?username=admin&password=admin123";
+      // var url="http://localhost:8756/ruoyi/test";
+      // var data={};
+      // data.username="admin";
+      // data.password="admin123";
+      $.post(
+        url,
+        function (result) {
+          alert(result);
+        },
+        "json"
+      );
+      // $.get(url,function(res){
+      //   alert(res);
+      // },'json');
+    }
+  </script>
+</html>
