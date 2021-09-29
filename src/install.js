@@ -50,15 +50,18 @@ export function install(Vue) {
       } else {
         this._routerRoot = (this.$parent && this.$parent._routerRoot) || this;
       }
+      // 注册实例
       registerInstance(this, this);
     },
     destroyed() {
+      // 销毁实例
       registerInstance(this);
     },
   });
 
   // Object.defineProperty() 直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象
   // 在 Vue 的原型链上面挂了个 $router
+  // 任何组件都可以直接通过 this.$router 访问路由器
   Object.defineProperty(Vue.prototype, "$router", {
     get() {
       return this._routerRoot._router;
@@ -66,7 +69,7 @@ export function install(Vue) {
   });
 
   // 在 Vue 的原型链上面挂了个 $route
-  // $route 似乎是存 当前路由对象 的
+  // 可以通过 this.$route 访问当前路由
   Object.defineProperty(Vue.prototype, "$route", {
     get() {
       return this._routerRoot._route;
@@ -74,6 +77,7 @@ export function install(Vue) {
   });
 
   // 挂载组件到 vue-router 插件上,后面插件安装之后,就能全局使用了
+  // 路由出口，路由匹配到的组件将渲染在这里
   Vue.component("RouterView", View);
   Vue.component("RouterLink", Link);
 
